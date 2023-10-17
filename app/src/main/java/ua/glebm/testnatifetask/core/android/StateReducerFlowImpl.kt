@@ -1,4 +1,4 @@
-package ua.glebm.testnatifetask.core
+package ua.glebm.testnatifetask.core.android
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel

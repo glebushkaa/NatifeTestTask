@@ -1,4 +1,4 @@
-package ua.glebm.testnatifetask.core
+package ua.glebm.testnatifetask.core.android
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
