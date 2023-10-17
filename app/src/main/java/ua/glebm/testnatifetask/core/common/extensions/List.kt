@@ -1,4 +1,4 @@
-package ua.glebm.testnatifetask.core.extensions
+package ua.glebm.testnatifetask.core.common.extensions
 
 /**
  * Created by gle.bushkaa email(gleb.mokryy@gmail.com) on 10/16/2023

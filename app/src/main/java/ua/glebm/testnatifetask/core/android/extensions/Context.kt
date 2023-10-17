@@ -1,4 +1,4 @@
-package ua.glebm.testnatifetask.core.extensions
+package ua.glebm.testnatifetask.core.android.extensions
 
 import android.content.Context
 import android.widget.Toast
