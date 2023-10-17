@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
+import ua.glebm.testnatifetask.log.debug
 
 /**
  * Created by gle.bushkaa email(gleb.mokryy@gmail.com) on 10/16/2023

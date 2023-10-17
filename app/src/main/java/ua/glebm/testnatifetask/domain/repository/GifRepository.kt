@@ -10,5 +10,5 @@ import ua.glebm.testnatifetask.model.Gif
 
 interface GifRepository {
 
-    fun getTrending(): Flow<PagingData<Gif>>
+    fun getSearchingGifs(query: String): Flow<PagingData<Gif>>
 }

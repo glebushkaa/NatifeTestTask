@@ -1,6 +1,7 @@
 package ua.glebm.testnatifetask.presentation.screens.home.adapter
 
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import ua.glebm.testnatifetask.core.android.BaseViewHolder
 import ua.glebm.testnatifetask.core.android.extensions.gone
 import ua.glebm.testnatifetask.core.android.extensions.loadListener
@@ -18,13 +19,14 @@ class GifViewHolder(
 
     override fun bind(model: Gif?): Unit = with(binding) {
         progressGif.visible()
-        if (model == null) return@with
+        textTitle.text = model?.title
         val listener = loadListener(
             onResourceReady = { _, _, _, _, _ -> progressGif.gone() },
         )
         imgGif.layout(0, 0, 0, 0)
         Glide.with(root)
-            .load(model.url)
+            .load(model?.url)
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
             .addListener(listener)
             .fitCenter()
             .centerCrop()
