@@ -14,7 +14,6 @@ import ua.glebm.testnatifetask.data.mapper.toGif
 import ua.glebm.testnatifetask.data.network.GiphyApi
 import ua.glebm.testnatifetask.data.paging.GiphyPagingMediator
 import ua.glebm.testnatifetask.data.paging.GiphyPagingMediator.Companion.GIFS_PAGE_SIZE
-import ua.glebm.testnatifetask.data.paging.ItemPagingSource
 import ua.glebm.testnatifetask.domain.repository.GifRepository
 import ua.glebm.testnatifetask.model.Gif
 import javax.inject.Inject
@@ -40,7 +39,6 @@ class GifRepositoryImpl @Inject constructor(
             giphyApi = giphyApi,
             giphyDao = giphyDao,
             query = query,
-            pageSize = GIFS_PAGE_SIZE,
         )
         val pager = Pager(
             config = config,
@@ -52,10 +50,9 @@ class GifRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getPagerGifs(
+    override suspend fun getSearchingGifsFromItem(
         query: String,
         uniqueId: String,
-        position: Int,
     ): Flow<PagingData<Gif>> {
         val itemId = giphyDao.getRowId(uniqueId)
         val config = PagingConfig(pageSize = FULLSCREEN_PAGE_SIZE)
@@ -63,20 +60,11 @@ class GifRepositoryImpl @Inject constructor(
             giphyApi = giphyApi,
             giphyDao = giphyDao,
             query = query,
-            pageSize = FULLSCREEN_PAGE_SIZE,
-        )
-        val initialPage = (position / FULLSCREEN_PAGE_SIZE).coerceAtLeast(FIRST_PAGE)
-        val pagingSource = ItemPagingSource(
-            id = itemId,
-            query = query,
-            initialPage = initialPage,
-            giphyDao = giphyDao,
-            pageSize = FULLSCREEN_PAGE_SIZE,
         )
         val pager = Pager(
             config = config,
             remoteMediator = mediator,
-            pagingSourceFactory = { pagingSource },
+            pagingSourceFactory = { giphyDao.getPagingSourceFromItem(query, itemId) },
         )
         return pager.flow.map {
             it.map { entity -> entity.toGif() }
@@ -85,6 +73,5 @@ class GifRepositoryImpl @Inject constructor(
 
     private companion object {
         const val FULLSCREEN_PAGE_SIZE = 10
-        const val FIRST_PAGE = 1
     }
 }

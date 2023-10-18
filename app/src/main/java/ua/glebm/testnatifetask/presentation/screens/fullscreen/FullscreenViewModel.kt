@@ -34,7 +34,6 @@ class FullscreenViewModel @Inject constructor(
     private val sideEffectChannel = Channel<FullscreenSideEffect>()
     private val query = savedStateHandle["query"] ?: ""
     private val uniqueId = savedStateHandle["uniqueId"] ?: ""
-    private val position = savedStateHandle["position"] ?: 0
 
     private var sideEffectJob: Job? = null
     private var stateJob: Job? = null
@@ -68,10 +67,9 @@ class FullscreenViewModel @Inject constructor(
     }
 
     private fun subscribeOnSearchingGifs() = viewModelScope.launch(Dispatchers.IO) {
-        gifRepository.getPagerGifs(
+        gifRepository.getSearchingGifsFromItem(
             query = query,
             uniqueId = uniqueId,
-            position = position,
         ).cachedIn(viewModelScope).collectLatest {
             val action = FullscreenAction.UpdateGifsList(it)
             sendAction(action)

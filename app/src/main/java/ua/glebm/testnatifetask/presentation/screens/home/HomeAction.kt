@@ -19,7 +19,6 @@ sealed class HomeAction {
 
     data class NavigateToFullscreen(
         val uniqueId: String,
-        val position: Int,
     ) : HomeAction()
 
     data class RemoveGif(
@@ -29,13 +28,13 @@ sealed class HomeAction {
     inline fun handle(
         updateSearchQuery: (String) -> Unit = {},
         updateGifsList: (PagingData<Gif>) -> Unit = {},
-        navigateToFullscreen: (String, Int) -> Unit = { _, _ -> },
+        navigateToFullscreen: (String) -> Unit = { },
         removeGif: (String) -> Unit = {},
     ) {
         when (this) {
             is UpdateSearchQuery -> updateSearchQuery(query)
             is UpdateGifsList -> updateGifsList(pagedGifs)
-            is NavigateToFullscreen -> navigateToFullscreen(uniqueId, position)
+            is NavigateToFullscreen -> navigateToFullscreen(uniqueId)
             is RemoveGif -> removeGif(uniqueId)
         }
     }

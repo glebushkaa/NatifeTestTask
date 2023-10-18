@@ -91,11 +91,10 @@ class HomeViewModel @Inject constructor(
             updateGifsList = { pagingData ->
                 return currentState.copy(pagingGifs = pagingData)
             },
-            navigateToFullscreen = { uniqueId, position ->
+            navigateToFullscreen = { uniqueId ->
                 val sideEffect = HomeSideEffect.NavigateToFullscreen(
                     uniqueId = uniqueId,
                     searchQuery = queryFlow.value,
-                    position = position,
                 )
                 sideEffectChannel.send(sideEffect)
             },

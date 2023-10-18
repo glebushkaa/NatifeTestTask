@@ -11,15 +11,14 @@ sealed class HomeSideEffect {
     data class NavigateToFullscreen(
         val uniqueId: String,
         val searchQuery: String,
-        val position: Int,
     ) : HomeSideEffect()
 
     inline fun handle(
-        navigateToFullscreen: (String, String, Int) -> Unit = { _, _, _ -> },
+        navigateToFullscreen: (String, String) -> Unit = { _, _ -> },
         scrollToTop: () -> Unit = {},
     ) {
         when (this) {
-            is NavigateToFullscreen -> navigateToFullscreen(uniqueId, searchQuery, position)
+            is NavigateToFullscreen -> navigateToFullscreen(uniqueId, searchQuery)
             ScrollToTop -> scrollToTop()
         }
     }
