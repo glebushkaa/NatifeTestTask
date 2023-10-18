@@ -67,6 +67,7 @@ dependencies {
     implementation(libs.glide)
 
     implementation(libs.view.pager)
+    implementation(libs.material)
 
     implementation(libs.paging.runtime)
 

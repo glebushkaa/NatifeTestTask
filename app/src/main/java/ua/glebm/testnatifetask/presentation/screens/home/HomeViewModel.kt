@@ -78,6 +78,9 @@ class HomeViewModel @Inject constructor(
                 val sideEffect = HomeSideEffect.NavigateToFullscreen(uniqueId, queryFlow.value)
                 sideEffectChannel.send(sideEffect)
             },
+            removeGif = {
+                gifRepository.removeGif(it)
+            },
         )
         return currentState
     }

@@ -27,6 +27,10 @@ class GifRepositoryImpl @Inject constructor(
     private val giphyDao: GiphyDao,
 ) : GifRepository {
 
+    override suspend fun removeGif(uniqueId: String) {
+        giphyDao.remove(uniqueId)
+    }
+
     override fun getSearchingGifs(
         query: String,
     ): Flow<PagingData<Gif>> {

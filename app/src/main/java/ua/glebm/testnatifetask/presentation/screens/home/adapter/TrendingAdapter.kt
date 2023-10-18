@@ -13,6 +13,7 @@ import ua.glebm.testnatifetask.model.Gif
 
 class TrendingAdapter(
     private val onGifClick: (String) -> Unit,
+    private val onRemoveClick: (String) -> Unit,
 ) : BasePagingAdapter<Gif, GifViewHolder>(
     GifDiffUtilCallback,
 ) {
@@ -25,6 +26,7 @@ class TrendingAdapter(
         return GifViewHolder(
             binding = binding,
             onGifClick = onGifClick,
+            onRemoveClick = onRemoveClick,
         )
     }
 }

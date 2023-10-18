@@ -21,15 +21,21 @@ sealed class HomeAction {
         val position: String,
     ) : HomeAction()
 
+    data class RemoveGif(
+        val uniqueId: String,
+    ) : HomeAction()
+
     inline fun handle(
         updateSearchQuery: (String) -> Unit = {},
         updateGifsList: (PagingData<Gif>) -> Unit = {},
         navigateToFullscreen: (String) -> Unit = {},
+        removeGif: (String) -> Unit = {},
     ) {
         when (this) {
             is UpdateSearchQuery -> updateSearchQuery(query)
             is UpdateGifsList -> updateGifsList(pagedGifs)
             is NavigateToFullscreen -> navigateToFullscreen(position)
+            is RemoveGif -> removeGif(uniqueId)
         }
     }
 }

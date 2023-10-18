@@ -54,10 +54,16 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>(
     }
 
     private fun setupGifsRecycler() = with(binding) {
-        recyclerTrending.adapter = TrendingAdapter {
-            val action = HomeAction.NavigateToFullscreen(it)
-            viewModel.sendAction(action)
-        }
+        recyclerTrending.adapter = TrendingAdapter(
+            onGifClick = {
+                val action = HomeAction.NavigateToFullscreen(it)
+                viewModel.sendAction(action)
+            },
+            onRemoveClick = {
+                val action = HomeAction.RemoveGif(it)
+                viewModel.sendAction(action)
+            },
+        )
     }
 
     private fun setupSearch() = with(binding) {

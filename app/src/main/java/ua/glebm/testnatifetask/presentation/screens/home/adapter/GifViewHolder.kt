@@ -16,6 +16,7 @@ import ua.glebm.testnatifetask.model.Gif
 class GifViewHolder(
     private val binding: ItemGifBinding,
     private val onGifClick: (String) -> Unit = {},
+    private val onRemoveClick: (String) -> Unit,
 ) : BaseViewHolder<Gif>(binding.root) {
 
     override fun bind(model: Gif?): Unit = with(binding) {
@@ -24,6 +25,9 @@ class GifViewHolder(
         val listener = loadListener(
             onResourceReady = { _, _, _, _, _ -> progressGif.gone() },
         )
+        btnRemove.setOnClickListener {
+            onRemoveClick(model?.uniqueId ?: "")
+        }
         imgGif.setOnClickListener {
             onGifClick(model?.uniqueId ?: "")
         }

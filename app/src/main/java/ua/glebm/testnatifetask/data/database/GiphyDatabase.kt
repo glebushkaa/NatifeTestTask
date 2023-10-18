@@ -4,6 +4,7 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import ua.glebm.testnatifetask.data.database.GiphyDatabase.Companion.GIPHY_DATABASE_VERSION
 import ua.glebm.testnatifetask.data.database.entities.GifEntity
+import ua.glebm.testnatifetask.data.database.entities.RemoveGifEntity
 
 /**
  * Created by gle.bushkaa email(gleb.mokryy@gmail.com) on 10/17/2023
@@ -12,6 +13,7 @@ import ua.glebm.testnatifetask.data.database.entities.GifEntity
 @Database(
     entities = [
         GifEntity::class,
+        RemoveGifEntity::class,
     ],
     version = GIPHY_DATABASE_VERSION,
     exportSchema = true,

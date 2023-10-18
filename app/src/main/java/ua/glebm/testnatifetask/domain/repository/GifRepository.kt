@@ -10,6 +10,8 @@ import ua.glebm.testnatifetask.model.Gif
 
 interface GifRepository {
 
+    suspend fun removeGif(uniqueId: String)
+
     fun getSearchingGifs(query: String): Flow<PagingData<Gif>>
     suspend fun getSearchingGifsFromItem(
         query: String,
