@@ -6,16 +6,21 @@ package ua.glebm.testnatifetask.presentation.screens.home
 
 sealed class HomeSideEffect {
 
+    data object ScrollToTop : HomeSideEffect()
+
     data class NavigateToFullscreen(
         val uniqueId: String,
         val searchQuery: String,
+        val position: Int,
     ) : HomeSideEffect()
 
     inline fun handle(
-        navigateToFullscreen: (String, String) -> Unit = { _, _ -> },
+        navigateToFullscreen: (String, String, Int) -> Unit = { _, _, _ -> },
+        scrollToTop: () -> Unit = {},
     ) {
         when (this) {
-            is NavigateToFullscreen -> navigateToFullscreen(uniqueId, searchQuery)
+            is NavigateToFullscreen -> navigateToFullscreen(uniqueId, searchQuery, position)
+            ScrollToTop -> scrollToTop()
         }
     }
 }

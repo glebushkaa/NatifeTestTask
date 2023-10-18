@@ -1,4 +1,4 @@
-package ua.glebm.testnatifetask.presentation.screens.home.adapter
+package ua.glebm.testnatifetask.presentation.shared
 
 import androidx.recyclerview.widget.DiffUtil
 import ua.glebm.testnatifetask.model.Gif

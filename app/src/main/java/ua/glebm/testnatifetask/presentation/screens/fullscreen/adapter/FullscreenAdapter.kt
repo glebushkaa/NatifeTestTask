@@ -6,7 +6,7 @@ import ua.glebm.testnatifetask.core.android.BasePagingAdapter
 import ua.glebm.testnatifetask.core.android.BaseViewHolder
 import ua.glebm.testnatifetask.databinding.ItemFullscreenGifBinding
 import ua.glebm.testnatifetask.model.Gif
-import ua.glebm.testnatifetask.presentation.screens.home.adapter.GifDiffUtilCallback
+import ua.glebm.testnatifetask.presentation.shared.GifDiffUtilCallback
 import ua.glebm.testnatifetask.presentation.screens.home.adapter.GifViewHolder
 
 /**

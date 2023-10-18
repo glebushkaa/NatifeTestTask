@@ -13,13 +13,9 @@ interface GifRepository {
     suspend fun removeGif(uniqueId: String)
 
     fun getSearchingGifs(query: String): Flow<PagingData<Gif>>
-    suspend fun getSearchingGifsFromItem(
+    suspend fun getPagerGifs(
         query: String,
         uniqueId: String,
-    ): Flow<PagingData<Gif>>
-
-    suspend fun getSearchingGifsByItem(
-        query: String,
-        uniqueId: String,
+        position: Int,
     ): Flow<PagingData<Gif>>
 }

@@ -55,7 +55,7 @@ class GiphyPagingMediator(
 
     private fun getPageIndex(loadType: LoadType): Int? {
         pageIndex = when (loadType) {
-            LoadType.REFRESH -> 0
+            LoadType.REFRESH -> 1
             LoadType.PREPEND -> return null
             LoadType.APPEND -> ++pageIndex
         }

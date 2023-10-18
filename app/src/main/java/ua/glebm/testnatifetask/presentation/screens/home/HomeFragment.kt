@@ -38,25 +38,41 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>(
         state.pagingGifs?.let { trendingAdapter.submitData(it) }
     }
 
-    private fun handleSideEffect(sideEffect: HomeSideEffect) {
+    private fun handleSideEffect(sideEffect: HomeSideEffect) = with(binding) {
         sideEffect.handle(
-            navigateToFullscreen = { uniqueId, query ->
-                val bundle = Bundle().apply {
-                    putString("query", query)
-                    putString("uniqueId", uniqueId)
-                }
-                findNavController().navigate(
-                    resId = R.id.action_home_to_fullscreen,
-                    args = bundle,
+            navigateToFullscreen = { uniqueId, query, position ->
+                navigateFullscreen(
+                    query = query,
+                    uniqueId = uniqueId,
+                    position = position,
                 )
             },
+            scrollToTop = {
+                recyclerTrending.scrollToPosition(0)
+            },
+        )
+    }
+
+    private fun navigateFullscreen(
+        query: String,
+        uniqueId: String,
+        position: Int,
+    ) {
+        val bundle = Bundle().apply {
+            putString("query", query)
+            putString("uniqueId", uniqueId)
+            putInt("position", position)
+        }
+        findNavController().navigate(
+            resId = R.id.action_home_to_fullscreen,
+            args = bundle,
         )
     }
 
     private fun setupGifsRecycler() = with(binding) {
         recyclerTrending.adapter = TrendingAdapter(
-            onGifClick = {
-                val action = HomeAction.NavigateToFullscreen(it)
+            onGifClick = { uniqueId, position ->
+                val action = HomeAction.NavigateToFullscreen(uniqueId, position)
                 viewModel.sendAction(action)
             },
             onRemoveClick = {
@@ -71,7 +87,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>(
             override fun onQueryTextSubmit(query: String) = false
 
             override fun onQueryTextChange(newText: String): Boolean {
-                recyclerTrending.scrollToPosition(0)
                 val action = HomeAction.UpdateSearchQuery(newText)
                 viewModel.sendAction(action)
                 return true
@@ -81,6 +96,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>(
     }
 
     override fun onDestroyView() {
+        viewModel.stopObserving()
         binding.recyclerTrending.adapter = null
         super.onDestroyView()
     }

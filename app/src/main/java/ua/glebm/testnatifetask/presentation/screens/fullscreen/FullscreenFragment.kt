@@ -4,9 +4,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import ua.glebm.testnatifetask.core.android.BaseFragment
 import ua.glebm.testnatifetask.databinding.FragmentFullscreenBinding
 import ua.glebm.testnatifetask.presentation.screens.fullscreen.adapter.FullscreenAdapter
@@ -45,9 +42,15 @@ class FullscreenFragment : BaseFragment<FragmentFullscreenBinding, FullscreenVie
         )
     }
 
-    private suspend fun render(state: FullscreenState) = withContext(Dispatchers.Main) {
+    private suspend fun render(state: FullscreenState) {
         state.pagingGifs?.let {
-            launch { fullscreenAdapter.submitData(it) }
+            fullscreenAdapter.submitData(it)
         }
+    }
+
+    override fun onDestroyView() {
+        viewModel.stopObserving()
+        binding.pagerGif.adapter = null
+        super.onDestroyView()
     }
 }

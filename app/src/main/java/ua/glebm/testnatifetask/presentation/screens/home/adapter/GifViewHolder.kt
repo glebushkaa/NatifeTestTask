@@ -15,25 +15,29 @@ import ua.glebm.testnatifetask.model.Gif
 
 class GifViewHolder(
     private val binding: ItemGifBinding,
-    private val onGifClick: (String) -> Unit = {},
+    private val onGifClick: (String, Int) -> Unit = { _, _ -> },
     private val onRemoveClick: (String) -> Unit,
 ) : BaseViewHolder<Gif>(binding.root) {
 
     override fun bind(model: Gif?): Unit = with(binding) {
         progressGif.visible()
-        textTitle.text = model?.title
+        if (model == null) return
+        textTitle.text = model.title
         val listener = loadListener(
             onResourceReady = { _, _, _, _, _ -> progressGif.gone() },
         )
         btnRemove.setOnClickListener {
-            onRemoveClick(model?.uniqueId ?: "")
+            onRemoveClick(model.uniqueId)
         }
         imgGif.setOnClickListener {
-            onGifClick(model?.uniqueId ?: "")
+            onGifClick(
+                model.uniqueId,
+                bindingAdapterPosition,
+            )
         }
         imgGif.layout(0, 0, 0, 0)
         Glide.with(root)
-            .load(model?.url)
+            .load(model.url)
             .diskCacheStrategy(DiskCacheStrategy.ALL)
             .addListener(listener)
             .fitCenter()

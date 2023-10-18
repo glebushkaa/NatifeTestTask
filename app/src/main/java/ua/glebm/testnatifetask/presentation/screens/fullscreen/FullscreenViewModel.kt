@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flowOn
@@ -33,6 +34,10 @@ class FullscreenViewModel @Inject constructor(
     private val sideEffectChannel = Channel<FullscreenSideEffect>()
     private val query = savedStateHandle["query"] ?: ""
     private val uniqueId = savedStateHandle["uniqueId"] ?: ""
+    private val position = savedStateHandle["position"] ?: 0
+
+    private var sideEffectJob: Job? = null
+    private var stateJob: Job? = null
 
     init {
         subscribeOnSearchingGifs()
@@ -46,19 +51,27 @@ class FullscreenViewModel @Inject constructor(
         onSideEffect: suspend (FullscreenSideEffect) -> Unit = {},
         render: suspend (FullscreenState) -> Unit = {},
     ) {
-        sideEffectChannel.receiveAsFlow().onEach {
+        sideEffectJob = sideEffectChannel.receiveAsFlow().onEach {
             onSideEffect.invoke(it)
         }.launchIn(viewModelScope)
 
-        state.onEach {
+        stateJob = state.onEach {
             render.invoke(it)
         }.flowOn(Dispatchers.Main).launchIn(viewModelScope)
     }
 
+    fun stopObserving() {
+        sideEffectJob?.cancel()
+        stateJob?.cancel()
+        sideEffectJob = null
+        stateJob = null
+    }
+
     private fun subscribeOnSearchingGifs() = viewModelScope.launch(Dispatchers.IO) {
-        gifRepository.getSearchingGifsFromItem(
+        gifRepository.getPagerGifs(
             query = query,
             uniqueId = uniqueId,
+            position = position,
         ).cachedIn(viewModelScope).collectLatest {
             val action = FullscreenAction.UpdateGifsList(it)
             sendAction(action)

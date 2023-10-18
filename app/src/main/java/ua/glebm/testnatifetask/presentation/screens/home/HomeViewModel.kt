@@ -7,6 +7,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -36,7 +37,10 @@ class HomeViewModel @Inject constructor(
         reduceState = ::reduce,
     )
     private val sideEffectChannel = Channel<HomeSideEffect>()
-    private var queryFlow = MutableStateFlow("hi")
+    private var queryFlow = MutableStateFlow("")
+
+    private var sideEffectJob: Job? = null
+    private var stateJob: Job? = null
 
     init {
         subscribeOnSearchingGifs()
@@ -50,13 +54,20 @@ class HomeViewModel @Inject constructor(
         onSideEffect: suspend (HomeSideEffect) -> Unit = {},
         render: suspend (HomeState) -> Unit = {},
     ) {
-        sideEffectChannel.receiveAsFlow().onEach {
+        sideEffectJob = sideEffectChannel.receiveAsFlow().onEach {
             onSideEffect.invoke(it)
         }.launchIn(viewModelScope)
 
-        state.onEach {
+        stateJob = state.onEach {
             render.invoke(it)
         }.flowOn(Dispatchers.Main).launchIn(viewModelScope)
+    }
+
+    fun stopObserving() {
+        sideEffectJob?.cancel()
+        stateJob?.cancel()
+        sideEffectJob = null
+        stateJob = null
     }
 
     private fun subscribeOnSearchingGifs() = viewModelScope.launch(Dispatchers.IO) {
@@ -70,12 +81,22 @@ class HomeViewModel @Inject constructor(
 
     private suspend fun reduce(currentState: HomeState, action: HomeAction): HomeState {
         action.handle(
-            updateSearchQuery = { query -> queryFlow.emit(query) },
+            updateSearchQuery = { query ->
+                if (query != queryFlow.value) {
+                    val sideEffect = HomeSideEffect.ScrollToTop
+                    sideEffectChannel.send(sideEffect)
+                }
+                queryFlow.emit(query)
+            },
             updateGifsList = { pagingData ->
                 return currentState.copy(pagingGifs = pagingData)
             },
-            navigateToFullscreen = { uniqueId ->
-                val sideEffect = HomeSideEffect.NavigateToFullscreen(uniqueId, queryFlow.value)
+            navigateToFullscreen = { uniqueId, position ->
+                val sideEffect = HomeSideEffect.NavigateToFullscreen(
+                    uniqueId = uniqueId,
+                    searchQuery = queryFlow.value,
+                    position = position,
+                )
                 sideEffectChannel.send(sideEffect)
             },
             removeGif = {

@@ -14,6 +14,7 @@ import ua.glebm.testnatifetask.data.mapper.toGif
 import ua.glebm.testnatifetask.data.network.GiphyApi
 import ua.glebm.testnatifetask.data.paging.GiphyPagingMediator
 import ua.glebm.testnatifetask.data.paging.GiphyPagingMediator.Companion.GIFS_PAGE_SIZE
+import ua.glebm.testnatifetask.data.paging.ItemPagingSource
 import ua.glebm.testnatifetask.domain.repository.GifRepository
 import ua.glebm.testnatifetask.model.Gif
 import javax.inject.Inject
@@ -47,57 +48,43 @@ class GifRepositoryImpl @Inject constructor(
             pagingSourceFactory = { giphyDao.getPagingSource(query) },
         )
         return pager.flow.map {
-            it.map { entity ->
-                entity.toGif()
-            }
+            it.map { entity -> entity.toGif() }
         }
     }
 
-    override suspend fun getSearchingGifsFromItem(
+    override suspend fun getPagerGifs(
         query: String,
         uniqueId: String,
+        position: Int,
     ): Flow<PagingData<Gif>> {
         val itemId = giphyDao.getRowId(uniqueId)
-        val config = PagingConfig(pageSize = 10)
+        val config = PagingConfig(pageSize = FULLSCREEN_PAGE_SIZE)
         val mediator = GiphyPagingMediator(
             giphyApi = giphyApi,
             giphyDao = giphyDao,
             query = query,
-            pageSize = 10,
+            pageSize = FULLSCREEN_PAGE_SIZE,
+        )
+        val initialPage = (position / FULLSCREEN_PAGE_SIZE).coerceAtLeast(FIRST_PAGE)
+        val pagingSource = ItemPagingSource(
+            id = itemId,
+            query = query,
+            initialPage = initialPage,
+            giphyDao = giphyDao,
+            pageSize = FULLSCREEN_PAGE_SIZE,
         )
         val pager = Pager(
             config = config,
             remoteMediator = mediator,
-            pagingSourceFactory = { giphyDao.getPagingSourceFromItem(query, itemId) },
+            pagingSourceFactory = { pagingSource },
         )
         return pager.flow.map {
-            it.map { entity ->
-                entity.toGif()
-            }
+            it.map { entity -> entity.toGif() }
         }
     }
 
-    override suspend fun getSearchingGifsByItem(
-        query: String,
-        uniqueId: String,
-    ): Flow<PagingData<Gif>> {
-        val itemId = giphyDao.getRowId(uniqueId)
-        val config = PagingConfig(pageSize = 10)
-        val mediator = GiphyPagingMediator(
-            giphyApi = giphyApi,
-            giphyDao = giphyDao,
-            query = query,
-            pageSize = 10,
-        )
-        val pager = Pager(
-            config = config,
-            remoteMediator = mediator,
-            pagingSourceFactory = { giphyDao.getPagingSourceFromItem(query, itemId) },
-        )
-        return pager.flow.map {
-            it.map { entity ->
-                entity.toGif()
-            }
-        }
+    private companion object {
+        const val FULLSCREEN_PAGE_SIZE = 10
+        const val FIRST_PAGE = 1
     }
 }

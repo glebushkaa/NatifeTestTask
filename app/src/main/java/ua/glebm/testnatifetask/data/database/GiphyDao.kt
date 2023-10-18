@@ -27,19 +27,34 @@ interface GiphyDao {
         id: Long,
     ): PagingSource<Int, GifEntity>
 
+    @Query("SELECT * FROM gif_entity WHERE :id <= rowId AND title LIKE :query || '%' ORDER BY rowId LIMIT :pageSize")
+    fun getListFromItem(
+        query: String,
+        id: Long,
+        pageSize: Int,
+    ): List<GifEntity>
+
+    @Query("SELECT * FROM gif_entity WHERE :id > rowId AND title LIKE :query || '%' ORDER BY rowId LIMIT :pageSize")
+    fun getListBeforeItem(
+        query: String,
+        id: Long,
+        pageSize: Int,
+    ): List<GifEntity>
+
+    @Query("SELECT rowId FROM gif_entity WHERE :id < rowId AND title LIKE :query || '%'")
+    fun getNextItemIdByQuery(
+        query: String,
+        id: Long,
+    ): Long
+
+    @Query("SELECT rowId FROM gif_entity WHERE :id > rowId AND title LIKE :query || '%'")
+    fun getPreviousItemIdByQuery(
+        query: String,
+        id: Long,
+    ): Long
+
     @Query("SELECT rowId FROM gif_entity WHERE unique_id == :uniqueId")
     suspend fun getRowId(uniqueId: String): Long
-
-    @Query(
-        "SELECT * FROM gif_entity WHERE " +
-            "abs(rowId - :itemId) <= :loadedItems/2  AND title LIKE :query || '%' " +
-            "ORDER BY rowId LIMIT 10 OFFSET :loadedItems",
-    )
-    suspend fun getGifs(
-        itemId: Long,
-        query: String,
-        loadedItems: Long,
-    ): List<GifEntity>
 
     @Query("SELECT removed_id FROM remove_gif_entity")
     suspend fun getRemovedIds(): List<String>
@@ -47,7 +62,7 @@ interface GiphyDao {
     @Query("DELETE FROM gif_entity WHERE unique_id == :uniqueId")
     suspend fun removeGif(uniqueId: String)
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertRemovedId(removeGifEntity: RemoveGifEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
