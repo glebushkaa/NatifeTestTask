@@ -40,11 +40,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>(
 
     private fun handleSideEffect(sideEffect: HomeSideEffect) = with(binding) {
         sideEffect.handle(
-            navigateToFullscreen = { uniqueId, query, position ->
+            navigateToFullscreen = { uniqueId, query ->
                 navigateFullscreen(
                     query = query,
                     uniqueId = uniqueId,
-                    position = position,
                 )
             },
             scrollToTop = {
@@ -56,12 +55,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>(
     private fun navigateFullscreen(
         query: String,
         uniqueId: String,
-        position: Int,
     ) {
         val bundle = Bundle().apply {
             putString("query", query)
             putString("uniqueId", uniqueId)
-            putInt("position", position)
         }
         findNavController().navigate(
             resId = R.id.action_home_to_fullscreen,
@@ -71,8 +68,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>(
 
     private fun setupGifsRecycler() = with(binding) {
         recyclerTrending.adapter = TrendingAdapter(
-            onGifClick = { uniqueId, position ->
-                val action = HomeAction.NavigateToFullscreen(uniqueId, position)
+            onGifClick = { uniqueId ->
+                val action = HomeAction.NavigateToFullscreen(uniqueId)
                 viewModel.sendAction(action)
             },
             onRemoveClick = {

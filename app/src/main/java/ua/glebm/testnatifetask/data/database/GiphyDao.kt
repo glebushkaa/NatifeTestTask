@@ -16,42 +16,16 @@ import ua.glebm.testnatifetask.data.database.entities.RemoveGifEntity
 @Dao
 interface GiphyDao {
 
-    @Query("SELECT * FROM gif_entity WHERE title LIKE :query || '%'")
+    @Query("SELECT * FROM gif_entity WHERE title LIKE :query || '%' ORDER BY rowId ASC")
     fun getPagingSource(
         query: String,
     ): PagingSource<Int, GifEntity>
 
-    @Query("SELECT * FROM gif_entity WHERE :id <= rowId AND title LIKE :query || '%'")
+    @Query("SELECT * FROM gif_entity WHERE :id <= rowId AND title LIKE :query || '%' ORDER BY rowId ASC")
     fun getPagingSourceFromItem(
         query: String,
         id: Long,
     ): PagingSource<Int, GifEntity>
-
-    @Query("SELECT * FROM gif_entity WHERE :id <= rowId AND title LIKE :query || '%' ORDER BY rowId LIMIT :pageSize")
-    fun getListFromItem(
-        query: String,
-        id: Long,
-        pageSize: Int,
-    ): List<GifEntity>
-
-    @Query("SELECT * FROM gif_entity WHERE :id > rowId AND title LIKE :query || '%' ORDER BY rowId LIMIT :pageSize")
-    fun getListBeforeItem(
-        query: String,
-        id: Long,
-        pageSize: Int,
-    ): List<GifEntity>
-
-    @Query("SELECT rowId FROM gif_entity WHERE :id < rowId AND title LIKE :query || '%'")
-    fun getNextItemIdByQuery(
-        query: String,
-        id: Long,
-    ): Long
-
-    @Query("SELECT rowId FROM gif_entity WHERE :id > rowId AND title LIKE :query || '%'")
-    fun getPreviousItemIdByQuery(
-        query: String,
-        id: Long,
-    ): Long
 
     @Query("SELECT rowId FROM gif_entity WHERE unique_id == :uniqueId")
     suspend fun getRowId(uniqueId: String): Long

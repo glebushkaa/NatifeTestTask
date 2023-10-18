@@ -15,7 +15,7 @@ import ua.glebm.testnatifetask.model.Gif
 
 class GifViewHolder(
     private val binding: ItemGifBinding,
-    private val onGifClick: (String, Int) -> Unit = { _, _ -> },
+    private val onGifClick: (String) -> Unit = { },
     private val onRemoveClick: (String) -> Unit,
 ) : BaseViewHolder<Gif>(binding.root) {
 
@@ -30,10 +30,7 @@ class GifViewHolder(
             onRemoveClick(model.uniqueId)
         }
         imgGif.setOnClickListener {
-            onGifClick(
-                model.uniqueId,
-                bindingAdapterPosition,
-            )
+            onGifClick(model.uniqueId)
         }
         imgGif.layout(0, 0, 0, 0)
         Glide.with(root)
