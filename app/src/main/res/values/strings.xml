@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">TestNatifeTask</string>
+    <string name="remove">Remove</string>
 </resources>

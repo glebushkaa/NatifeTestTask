@@ -10,12 +10,12 @@ plugins {
 
 android {
     namespace = "ua.glebm.testnatifetask"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "ua.glebm.testnatifetask"
         minSdk = 24
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -27,7 +27,6 @@ android {
 
     buildTypes {
         release {
-            isShrinkResources = true
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -43,10 +42,7 @@ android {
         jvmTarget = "1.8"
     }
     buildFeatures {
-        compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.3"
+        viewBinding = true
     }
     packaging {
         resources {
@@ -56,21 +52,8 @@ android {
 }
 
 dependencies {
-    val composeBom = platform(libs.androidx.compose.bom)
-    implementation(composeBom)
-    implementation(libs.compose.ui)
-    implementation(libs.compose.ui.tooling)
-    implementation(libs.compose.ui.tooling.preview)
-    implementation(libs.compose.ui.graphics)
-    implementation(libs.compose.material)
-    implementation(libs.material)
-    implementation(libs.compose.navigation)
-    implementation(libs.coil.compose)
-
-    implementation(libs.androidx.lifecycle.runtime.compose)
-    implementation(libs.androidx.activity.compose)
-
     implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.timber)
 
     implementation(libs.kotlinx.coroutines.android)
@@ -81,11 +64,18 @@ dependencies {
     implementation(libs.okhttp3)
     implementation(libs.gson)
 
+    implementation(libs.glide)
+
+    implementation(libs.view.pager)
+    implementation(libs.material)
+
+    implementation(libs.paging.runtime)
+
     implementation(libs.room.runtime)
+    implementation(libs.room.paging)
     implementation(libs.room.ktx)
     ksp(libs.room.compiler)
 
     implementation(libs.hilt.android)
-    implementation(libs.hilt.navigation.compose)
     kapt(libs.hilt.compiler)
 }
