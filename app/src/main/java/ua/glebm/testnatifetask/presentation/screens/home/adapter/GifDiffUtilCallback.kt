@@ -10,7 +10,7 @@ import ua.glebm.testnatifetask.model.Gif
 object GifDiffUtilCallback : DiffUtil.ItemCallback<Gif>() {
 
     override fun areItemsTheSame(oldItem: Gif, newItem: Gif): Boolean {
-        return oldItem.id == newItem.id
+        return oldItem.uniqueId == newItem.uniqueId
     }
 
     override fun areContentsTheSame(oldItem: Gif, newItem: Gif): Boolean {

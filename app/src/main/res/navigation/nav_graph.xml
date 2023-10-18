@@ -8,6 +8,21 @@
     <fragment
         android:id="@+id/home"
         android:name="ua.glebm.testnatifetask.presentation.screens.home.HomeFragment"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home">
+
+        <action
+            android:id="@+id/action_home_to_fullscreen"
+            app:destination="@id/fullscreen"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_in"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_in" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/fullscreen"
+        android:name="ua.glebm.testnatifetask.presentation.screens.fullscreen.FullscreenFragment"
+        tools:layout="@layout/fragment_fullscreen" />
 
 </navigation>

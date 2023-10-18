@@ -36,11 +36,10 @@ class HomeViewModel @Inject constructor(
         reduceState = ::reduce,
     )
     private val sideEffectChannel = Channel<HomeSideEffect>()
-    private var queryFlow = MutableStateFlow("")
+    private var queryFlow = MutableStateFlow("hi")
 
     init {
         subscribeOnSearchingGifs()
-        queryFlow.tryEmit("")
     }
 
     fun sendAction(action: HomeAction) = viewModelScope.launch(Dispatchers.IO) {
@@ -74,6 +73,10 @@ class HomeViewModel @Inject constructor(
             updateSearchQuery = { query -> queryFlow.emit(query) },
             updateGifsList = { pagingData ->
                 return currentState.copy(pagingGifs = pagingData)
+            },
+            navigateToFullscreen = { uniqueId ->
+                val sideEffect = HomeSideEffect.NavigateToFullscreen(uniqueId, queryFlow.value)
+                sideEffectChannel.send(sideEffect)
             },
         )
         return currentState

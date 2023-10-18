@@ -9,7 +9,7 @@ import ua.glebm.testnatifetask.model.Gif
 
 fun GifEntity.toGif(): Gif {
     return Gif(
-        id = this.id,
+        uniqueId = this.uniqueId,
         url = this.url,
         title = title,
     )

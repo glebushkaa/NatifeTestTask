@@ -5,7 +5,7 @@ package ua.glebm.testnatifetask.model
  */
 
 data class Gif(
-    val id: String,
+    val uniqueId: String,
     val url: String,
     val title: String,
 )

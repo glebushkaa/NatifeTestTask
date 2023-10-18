@@ -17,13 +17,19 @@ sealed class HomeAction {
         val pagedGifs: PagingData<Gif>,
     ) : HomeAction()
 
+    data class NavigateToFullscreen(
+        val position: String,
+    ) : HomeAction()
+
     inline fun handle(
         updateSearchQuery: (String) -> Unit = {},
         updateGifsList: (PagingData<Gif>) -> Unit = {},
+        navigateToFullscreen: (String) -> Unit = {},
     ) {
         when (this) {
             is UpdateSearchQuery -> updateSearchQuery(query)
             is UpdateGifsList -> updateGifsList(pagedGifs)
+            is NavigateToFullscreen -> navigateToFullscreen(position)
         }
     }
 }

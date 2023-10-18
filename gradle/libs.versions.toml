@@ -24,6 +24,8 @@ paging = "3.2.1"
 
 glide = "4.16.0"
 
+view-pager-2 = "1.0.0"
+
 [libraries]
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidxAppCompat" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidxCore" }
@@ -46,6 +48,8 @@ android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", ver
 kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 
 paging-runtime = { group = "androidx.paging", name = "paging-runtime", version.ref = "paging" }
+
+view-pager = { group = "androidx.viewpager2", name = "viewpager2", version.ref = "view-pager-2" }
 
 glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
 

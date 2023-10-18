@@ -19,10 +19,12 @@ import ua.glebm.testnatifetask.data.network.GiphyApi
 class GiphyPagingMediator(
     private val giphyDao: GiphyDao,
     private val giphyApi: GiphyApi,
+    private val pageSize: Int = GIFS_PAGE_SIZE,
     private val query: String,
+    initialPage: Int = 0,
 ) : RemoteMediator<Int, GifEntity>() {
 
-    private var pageIndex = 0
+    private var pageIndex = initialPage
 
     override suspend fun load(
         loadType: LoadType,
@@ -33,7 +35,7 @@ class GiphyPagingMediator(
                 endOfPaginationReached = true,
             )
             val limit = state.config.pageSize
-            val offset = pageIndex * GIFS_PAGE_SIZE
+            val offset = pageIndex * pageSize
             val response = withContext(Dispatchers.IO) {
                 giphyApi.getSearched(
                     limit = limit,
@@ -53,7 +55,7 @@ class GiphyPagingMediator(
 
     private fun getPageIndex(loadType: LoadType): Int? {
         pageIndex = when (loadType) {
-            LoadType.REFRESH -> 1
+            LoadType.REFRESH -> 0
             LoadType.PREPEND -> return null
             LoadType.APPEND -> ++pageIndex
         }

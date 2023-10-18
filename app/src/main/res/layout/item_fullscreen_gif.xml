@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/frame"
     android:layout_width="match_parent"
-    android:layout_height="300dp">
+    android:layout_height="match_parent">
 
     <ProgressBar
         android:id="@+id/progress_gif"
@@ -12,19 +11,10 @@
         android:indeterminateTint="@color/teal_200"
         android:visibility="gone" />
 
-    <TextView
-        android:id="@+id/text_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center|top"
-        android:layout_marginTop="12dp"
-        android:textColor="@color/purple_200" />
-
     <ImageView
-        android:id="@+id/img_gif"
+        android:id="@+id/img_fullscreen_gif"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="12dp"
         android:adjustViewBounds="true" />
 
 </FrameLayout>

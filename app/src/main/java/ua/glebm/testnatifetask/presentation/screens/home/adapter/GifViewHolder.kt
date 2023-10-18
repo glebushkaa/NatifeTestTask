@@ -15,6 +15,7 @@ import ua.glebm.testnatifetask.model.Gif
 
 class GifViewHolder(
     private val binding: ItemGifBinding,
+    private val onGifClick: (String) -> Unit = {},
 ) : BaseViewHolder<Gif>(binding.root) {
 
     override fun bind(model: Gif?): Unit = with(binding) {
@@ -23,6 +24,9 @@ class GifViewHolder(
         val listener = loadListener(
             onResourceReady = { _, _, _, _, _ -> progressGif.gone() },
         )
+        imgGif.setOnClickListener {
+            onGifClick(model?.uniqueId ?: "")
+        }
         imgGif.layout(0, 0, 0, 0)
         Glide.with(root)
             .load(model?.url)

@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalPagingApi::class)
+
 package ua.glebm.testnatifetask.data.repository
 
 import androidx.paging.ExperimentalPagingApi
@@ -25,7 +27,6 @@ class GifRepositoryImpl @Inject constructor(
     private val giphyDao: GiphyDao,
 ) : GifRepository {
 
-    @OptIn(ExperimentalPagingApi::class)
     override fun getSearchingGifs(
         query: String,
     ): Flow<PagingData<Gif>> {
@@ -34,11 +35,60 @@ class GifRepositoryImpl @Inject constructor(
             giphyApi = giphyApi,
             giphyDao = giphyDao,
             query = query,
+            pageSize = GIFS_PAGE_SIZE,
         )
         val pager = Pager(
             config = config,
             remoteMediator = mediator,
             pagingSourceFactory = { giphyDao.getPagingSource(query) },
+        )
+        return pager.flow.map {
+            it.map { entity ->
+                entity.toGif()
+            }
+        }
+    }
+
+    override suspend fun getSearchingGifsFromItem(
+        query: String,
+        uniqueId: String,
+    ): Flow<PagingData<Gif>> {
+        val itemId = giphyDao.getRowId(uniqueId)
+        val config = PagingConfig(pageSize = 10)
+        val mediator = GiphyPagingMediator(
+            giphyApi = giphyApi,
+            giphyDao = giphyDao,
+            query = query,
+            pageSize = 10,
+        )
+        val pager = Pager(
+            config = config,
+            remoteMediator = mediator,
+            pagingSourceFactory = { giphyDao.getPagingSourceFromItem(query, itemId) },
+        )
+        return pager.flow.map {
+            it.map { entity ->
+                entity.toGif()
+            }
+        }
+    }
+
+    override suspend fun getSearchingGifsByItem(
+        query: String,
+        uniqueId: String,
+    ): Flow<PagingData<Gif>> {
+        val itemId = giphyDao.getRowId(uniqueId)
+        val config = PagingConfig(pageSize = 10)
+        val mediator = GiphyPagingMediator(
+            giphyApi = giphyApi,
+            giphyDao = giphyDao,
+            query = query,
+            pageSize = 10,
+        )
+        val pager = Pager(
+            config = config,
+            remoteMediator = mediator,
+            pagingSourceFactory = { giphyDao.getPagingSourceFromItem(query, itemId) },
         )
         return pager.flow.map {
             it.map { entity ->

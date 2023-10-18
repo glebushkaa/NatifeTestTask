@@ -10,9 +10,9 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "gif_entity")
 data class GifEntity(
-    @ColumnInfo("id")
-    @PrimaryKey(autoGenerate = false)
-    val id: String,
+    @PrimaryKey(false)
+    @ColumnInfo("unique_id")
+    val uniqueId: String,
     @ColumnInfo("url") val url: String,
     @ColumnInfo("title") val title: String,
 )

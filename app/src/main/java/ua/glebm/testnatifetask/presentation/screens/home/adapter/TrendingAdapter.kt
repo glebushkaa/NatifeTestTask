@@ -11,7 +11,9 @@ import ua.glebm.testnatifetask.model.Gif
  * Created by gle.bushkaa email(gleb.mokryy@gmail.com) on 10/16/2023
  */
 
-class TrendingAdapter : BasePagingAdapter<Gif, GifViewHolder>(
+class TrendingAdapter(
+    private val onGifClick: (String) -> Unit,
+) : BasePagingAdapter<Gif, GifViewHolder>(
     GifDiffUtilCallback,
 ) {
     override fun createViewHolder(
@@ -20,6 +22,9 @@ class TrendingAdapter : BasePagingAdapter<Gif, GifViewHolder>(
         viewType: Int,
     ): BaseViewHolder<Gif> {
         val binding = ItemGifBinding.inflate(inflater, parent, false)
-        return GifViewHolder(binding)
+        return GifViewHolder(
+            binding = binding,
+            onGifClick = onGifClick,
+        )
     }
 }

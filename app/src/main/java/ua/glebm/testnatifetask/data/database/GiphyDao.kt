@@ -19,6 +19,26 @@ interface GiphyDao {
         query: String,
     ): PagingSource<Int, GifEntity>
 
+    @Query("SELECT * FROM gif_entity WHERE :id <= rowId AND title LIKE :query || '%'")
+    fun getPagingSourceFromItem(
+        query: String,
+        id: Long,
+    ): PagingSource<Int, GifEntity>
+
+    @Query("SELECT rowId FROM gif_entity WHERE unique_id == :uniqueId")
+    suspend fun getRowId(uniqueId: String): Long
+
+    @Query(
+        "SELECT * FROM gif_entity WHERE " +
+            "abs(rowId - :itemId) <= :loadedItems/2  AND title LIKE :query || '%' " +
+            "ORDER BY rowId LIMIT 10 OFFSET :loadedItems",
+    )
+    suspend fun getGifs(
+        itemId: Long,
+        query: String,
+        loadedItems: Long,
+    ): List<GifEntity>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun save(launches: List<GifEntity>)
 }

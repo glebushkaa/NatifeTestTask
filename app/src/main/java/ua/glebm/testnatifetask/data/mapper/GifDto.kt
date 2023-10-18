@@ -9,7 +9,7 @@ import ua.glebm.testnatifetask.data.network.dto.GifDto
 
 fun GifDto.toGifEntity(): GifEntity {
     return GifEntity(
-        id = this.id ?: "",
+        uniqueId = this.id ?: "",
         url = this.images?.original?.url ?: "",
         title = title ?: "",
     )
